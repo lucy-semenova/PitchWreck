@@ -1,20 +1,26 @@
-import prompts from "../data/prompts";
 import images from "../data/images.js";
 
-import { getRandomItem } from "./random";
-
+import { getRandomItem, getRandomNumber } from "./random";
 
 export function generateSlides() {
-  const randomCount = Math.floor(Math.random() * 6) + 5;
- const slides = [];
+  const slideCount = getRandomNumber(5, 10);
 
-  for (let i = 0; i < randomCount; i++) {
+  const slides = [];
+
+  for (let i = 0; i < slideCount; i++) {
     slides.push({
       id: i + 1,
-      word: getRandomItem(prompts),
       image: getRandomItem(images),
     });
   }
+
+  slides.push({
+    id: slideCount + 1,
+    word: "Спасибо за внимание",
+    image:
+      "https://picsum.photos/900/600?grayscale",
+    isFinal: true,
+  });
 
   return slides;
 }

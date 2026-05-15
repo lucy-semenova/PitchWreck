@@ -1,11 +1,11 @@
-import { useState} from "react";
-
 import Slide from "./components/Presentation/Slide";
+import { useState, useEffect } from "react";
 
 import { generateTitle } from "./utils/generateTitle";
 import { generateSlides } from "./utils/generateSlides";
 
 export default function App() {
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [title, setTitle] = useState(generateTitle());
   const [slides, setSlides] = useState(generateSlides());
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -24,7 +24,8 @@ export default function App() {
 
   function handleStop() {
     setIsPlaying(false);
-    setCurrentSlideIndex(0);
+  setIsAutoPlaying(false);
+  setCurrentSlideIndex(0);
   }
 
   function handleNextSlide() {
@@ -32,8 +33,26 @@ export default function App() {
       setCurrentSlideIndex(currentSlideIndex + 1);
     }
   }
+function handleAutoPlay() {
+  setIsPlaying(true);
+  setIsAutoPlaying(!isAutoPlaying);
+}
+useEffect(() => {
+  if (!isAutoPlaying) return;
 
+  const interval = setInterval(() => {
+    setCurrentSlideIndex((previousIndex) => {
+      if (previousIndex < slides.length - 1) {
+        return previousIndex + 1;
+      }
 
+      setIsAutoPlaying(false);
+      return previousIndex;
+    });
+  }, 5000);
+
+  return () => clearInterval(interval);
+}, [isAutoPlaying, slides.length]);
 
 
 
@@ -42,15 +61,26 @@ export default function App() {
     <main>
       <h1>PitchWreck</h1>
       <p>Survive the presentation.</p>
+      <h3>Импровизируй. Выживай. Не паникуй.</h3>
 
       <h2>{title}</h2>
 
       <button onClick={handleGenerateNew}>Generate New</button>
       <button onClick={handleStart}>Start</button>
-     <button onClick={handleNextSlide} disabled={currentSlideIndex === slides.length - 1}>
+    <button
+  onClick={handleNextSlide}
+  disabled={
+    currentSlideIndex === slides.length - 1 ||
+    isAutoPlaying
+  }
+>
   Next
 </button>
+      <button onClick={handleAutoPlay}>
+  {isAutoPlaying ? "Stop Auto" : "Auto Play"}
+</button>
       <button onClick={handleStop}>Stop</button>
+      
 
       {isPlaying && <Slide slide={slides[currentSlideIndex]} />}
       {isPlaying && currentSlideIndex === slides.length - 1 && (
