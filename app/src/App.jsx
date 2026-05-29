@@ -60,13 +60,13 @@ useEffect(() => {
   return (
     <main>
       <h1>PitchWreck</h1>
-      <p>Survive the presentation.</p>
+     
       <h3>Импровизируй. Выживай. Не паникуй.</h3>
 
       <h2>{title}</h2>
 
-      <button onClick={handleGenerateNew}>Generate New</button>
-      <button onClick={handleStart}>Start</button>
+      <button onClick={handleGenerateNew}>Сгенерировать новый</button>
+      <button onClick={handleStart}>Старт</button>
     <button
   onClick={handleNextSlide}
   disabled={
@@ -74,12 +74,12 @@ useEffect(() => {
     isAutoPlaying
   }
 >
-  Next
+  Следующий
 </button>
       <button onClick={handleAutoPlay}>
   {isAutoPlaying ? "Stop Auto" : "Auto Play"}
 </button>
-      <button onClick={handleStop}>Stop</button>
+      <button onClick={handleStop}>Стоп</button>
       
 
       {isPlaying && <Slide slide={slides[currentSlideIndex]} />}

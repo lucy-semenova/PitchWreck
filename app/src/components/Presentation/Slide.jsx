@@ -10,7 +10,7 @@ export default function Slide({ slide }) {
 
   return (
     <section className="slide">
-      <h2>Slide {slide.id}</h2>
+      <h2>Слайд {slide.id}</h2>
 
       <img src={slide.image} alt={slide.word} />
 
