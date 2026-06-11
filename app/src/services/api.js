@@ -1,18 +1,28 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL = import.meta.env.VITE_API_URL;
+
+async function handleResponse(response, fallbackMessage) {
+  if (!response.ok) {
+    let errorMessage = fallbackMessage;
+
+    try {
+      const data = await response.json();
+      errorMessage = data.error || fallbackMessage;
+    } catch {
+      errorMessage = fallbackMessage;
+    }
+
+    throw new Error(errorMessage);
+  }
+
+  return response.json();
+}
 
 export async function getRandomPresentation(language) {
   const response = await fetch(
     `${API_URL}/api/random/presentation?language=${language}`
   );
 
-  if (!response.ok) {
-    throw new Error(data.error || "Failed to fetch presentation");
-  }
-if (!response.ok) {
-    throw new Error("Could not generate presentation");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not generate presentation");
 }
 
 export async function getRandomTitle(language) {
@@ -20,9 +30,5 @@ export async function getRandomTitle(language) {
     `${API_URL}/api/random/title?language=${language}`
   );
 
-  if (!response.ok) {
-    throw new Error("Could not generate title");
-  }
-
-  return response.json();
+  return handleResponse(response, "Could not generate title");
 }
