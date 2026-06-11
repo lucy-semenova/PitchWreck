@@ -9,28 +9,6 @@ body {
   color: #f9fafb;
 }
 
-main {
-  min-height: 100vh;
-  padding: 40px 24px;
-  text-align: center;
-}
-
-h1 {
-  margin-bottom: 8px;
-  font-size: 48px;
-}
-
-p {
-  color: #d1d5db;
-}
-
-h2 {
-  margin: 32px auto;
-  max-width: 900px;
-  font-size: 36px;
-  line-height: 1.2;
-}
-
 button {
   margin: 8px;
   padding: 12px 20px;
@@ -52,24 +30,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-section {
-  max-width: 900px;
-  margin: 40px auto 0;
-  padding: 32px;
-  border-radius: 24px;
-  background: #1f2937;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-}
-
-section img {
-  width: 100%;
-  max-width: 700px;
-  border-radius: 20px;
-  object-fit: cover;
-}
-
-section h3 {
-  margin-top: 24px;
-  font-size: 44px;
-  color: #facc15;
+img {
+  max-width: 100%;
 }
