@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // React fallback route
 // This lets React handle frontend routes and page refreshes.
-app.get("*", (req, res) => {
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
