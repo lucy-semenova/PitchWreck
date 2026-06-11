@@ -1,0 +1,36 @@
+.presentationScreen {
+  min-height: 100vh;
+  padding: 24px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.presentationHeader h1 {
+  max-width: 900px;
+  margin:  12px;
+  padding: 10px;
+  font-size: 1.25rem;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: white;
+}
+
+
+
+.presentationActions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.button {
+  margin: 10px 0;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+}
+

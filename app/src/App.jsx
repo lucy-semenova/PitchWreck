@@ -1,91 +1,129 @@
-import Slide from "./components/Presentation/Slide";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { generateTitle } from "./utils/generateTitle";
-import { generateSlides } from "./utils/generateSlides";
+import StartScreen from "./components/StartScreen/StartScreen";
+import TitleScreen from "./components/TitleScreen/TitleScreen";
+import Presentation from "./components/Presentation/Presentation";
+
+import { getRandomPresentation, getRandomTitle } from "./services/api";
 
 export default function App() {
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  const [title, setTitle] = useState(generateTitle());
-  const [slides, setSlides] = useState(generateSlides());
+  const [presentation, setPresentation] = useState(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [screen, setScreen] = useState("start");
+  const [language, setLanguage] = useState("eng");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleGenerateNew() {
-    setTitle(generateTitle());
-    setSlides(generateSlides());
+  function handleLanguageChange(newLanguage) {
+    setLanguage(newLanguage);
+    setError("");
+  }
+
+  async function handleGeneratePresentation() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getRandomPresentation(language);
+
+      setPresentation(data);
+      setCurrentSlideIndex(0);
+      setScreen("title");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGenerateTitle() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const data = await getRandomTitle(language);
+
+      setPresentation((previousPresentation) => ({
+        ...previousPresentation,
+        title: data.title,
+      }));
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleStartPresentation() {
     setCurrentSlideIndex(0);
-    setIsPlaying(false);
+    setScreen("presentation");
   }
 
-  function handleStart() {
-    setIsPlaying(true);
+  function handleBackToStart() {
+    setPresentation(null);
+    setCurrentSlideIndex(0);
+    setScreen("start");
   }
 
-  function handleStop() {
-    setIsPlaying(false);
-  setIsAutoPlaying(false);
-  setCurrentSlideIndex(0);
+  function handleBackToTitle() {
+    setCurrentSlideIndex(0);
+    setScreen("title");
   }
 
   function handleNextSlide() {
-    if (currentSlideIndex < slides.length - 1) {
-      setCurrentSlideIndex(currentSlideIndex + 1);
+    if (!presentation) return;
+
+    if (currentSlideIndex < presentation.slides.length - 1) {
+      setCurrentSlideIndex((previousIndex) => previousIndex + 1);
     }
   }
-function handleAutoPlay() {
-  setIsPlaying(true);
-  setIsAutoPlaying(!isAutoPlaying);
-}
-useEffect(() => {
-  if (!isAutoPlaying) return;
 
-  const interval = setInterval(() => {
-    setCurrentSlideIndex((previousIndex) => {
-      if (previousIndex < slides.length - 1) {
-        return previousIndex + 1;
-      }
-
-      setIsAutoPlaying(false);
-      return previousIndex;
-    });
-  }, 5000);
-
-  return () => clearInterval(interval);
-}, [isAutoPlaying, slides.length]);
-
-
-
-  
-  return (
-    <main>
-      <h1>PitchWreck</h1>
-     
-      <h3>Импровизируй. Выживай. Не паникуй.</h3>
-
-      <h2>{title}</h2>
-
-      <button onClick={handleGenerateNew}>Сгенерировать новый</button>
-      <button onClick={handleStart}>Старт</button>
-    <button
-  onClick={handleNextSlide}
-  disabled={
-    currentSlideIndex === slides.length - 1 ||
-    isAutoPlaying
+  function handlePreviousSlide() {
+    if (currentSlideIndex > 0) {
+      setCurrentSlideIndex((previousIndex) => previousIndex - 1);
+    }
   }
->
-  Следующий
-</button>
-      <button onClick={handleAutoPlay}>
-  {isAutoPlaying ? "Stop Auto" : "Auto Play"}
-</button>
-      <button onClick={handleStop}>Стоп</button>
-      
 
-      {isPlaying && <Slide slide={slides[currentSlideIndex]} />}
-      {isPlaying && currentSlideIndex === slides.length - 1 && (
-  <p>You survived PitchWreck 🎉</p>
-)}
-    </main>
-  );
+  if (screen === "start") {
+    return (
+      <StartScreen
+        language={language}
+        onLanguageChange={handleLanguageChange}
+        onGeneratePresentation={handleGeneratePresentation}
+        loading={loading}
+        error={error}
+      />
+    );
+  }
+
+  if (screen === "title" && presentation) {
+    return (
+      <TitleScreen
+        language={language}
+        title={presentation.title}
+        onGenerateTitle={handleGenerateTitle}
+        onStartPresentation={handleStartPresentation}
+        onBack={handleBackToStart}
+        loading={loading}
+        error={error}
+      />
+    );
+  }
+
+  if (screen === "presentation" && presentation) {
+    return (
+      <Presentation
+        language={language}
+        title={presentation.title}
+        slides={presentation.slides}
+        currentSlideIndex={currentSlideIndex}
+        onPreviousSlide={handlePreviousSlide}
+        onNextSlide={handleNextSlide}
+        onBackToTitle={handleBackToTitle}
+        onNewGame={handleBackToStart}
+      />
+    );
+  }
+
+  return null;
 }

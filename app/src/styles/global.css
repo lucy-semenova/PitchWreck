@@ -1,32 +1,11 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #111827;
+  background: black;
   color: white;
 }
 
-main {
-  min-height: 100vh;
-  padding: 40px;
-  text-align: center;
+* {
+  box-sizing: border-box;
 }
 
-button {
-  margin: 10px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 10px;
-  background: #2563eb;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #1d4ed8;
-}
-
-img {
-  border-radius: 16px;
-  margin-top: 20px;
-}
